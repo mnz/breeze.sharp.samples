@@ -2,11 +2,13 @@
 *.idea
 *.user
 *.docx
+*.vs
 *.vsmdi
 *.cmd
 *.testsettings
 *.old
 *.suo
+*.userprefs
 
 node_modules
 bin
@@ -21,3 +23,8 @@ GetFtpCredential.ps1
 
 breeze-*.zip
 breeze*.nupkg
+
+#Don't commit databases (except manually in some cases)
+*.mdf
+*.ldf
+*.sdf

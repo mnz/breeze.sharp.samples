@@ -133,6 +133,21 @@ namespace Test_NetClient {
     }
 
     [TestMethod]
+    public async Task EntityWithEnumProperty() {
+      try {
+        var entityManager = await TestFns.NewEm(_serviceName);
+        var roles = await EntityQuery.From<Role>().Execute(entityManager);
+        var roleTypes = roles.Where(r => r.RoleType != null).Select(r => r.RoleType).ToList();
+        var isEnum = roleTypes.First().GetType().IsEnum;
+        Assert.IsTrue(isEnum);
+
+      } catch (Exception e) {
+        var message = TestFns.FormatException(e);
+        Assert.Fail(message);
+      }
+    }
+
+    [TestMethod]
     public async Task CanFetchEntityTwice() {
       var entityManager = new EntityManager(_serviceName);
       await entityManager.FetchMetadata();
@@ -191,6 +206,10 @@ namespace Test_NetClient {
       try {
         var entityManager = await TestFns.NewEm(_serviceName);
 
+        var query0 = new EntityQuery<OrderDetail>().Where(od => od.Quantity > 3);
+        var orderDetails = await entityManager.ExecuteQuery(query0);
+        Assert.IsTrue(orderDetails.Any(), "There should be orders with freight cost > 100");
+
         //  Customers starting w/ 'A' (string comparison)
         var query1 = new EntityQuery<Customer>().Where(c => c.CompanyName.StartsWith("A"))
                                                 .OrderBy(c => c.CompanyName);
@@ -217,6 +236,8 @@ namespace Test_NetClient {
         Assert.Fail(message);
       }
     }
+
+
 
     #endregion Simple single condition queries
 

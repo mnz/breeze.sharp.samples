@@ -475,6 +475,15 @@ namespace Northwind.Models
   }
   #endregion Region class
 
+  public enum RoleType
+  {
+      Guest = 0,
+      Restricted = 1,
+      Standard = 2,
+      Admin = 3
+  }
+
+
   #region Role class
   public class Role {
 
@@ -488,6 +497,9 @@ namespace Northwind.Models
 
     [InverseProperty("Role")]
     public ICollection<UserRole> UserRoles { get; set; }
+
+    [Required]
+    public Nullable<RoleType> RoleType { get; set; }
 
   }
   #endregion Role class
@@ -571,6 +583,46 @@ namespace Northwind.Models
 
   }
   #endregion Territory class
+
+  #region TimeLimit class
+
+  public partial class TimeLimit {
+
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+
+    public System.TimeSpan MaxTime { get; set; }
+    public Nullable<System.TimeSpan> MinTime { get; set; }
+
+    // [ForeignKey("TimeGroup")]
+    [Column("TimeGroupId")]
+    public System.Nullable<int> TimeGroupId { get; set; }
+
+    [ForeignKey("TimeGroupId")]
+    [InverseProperty("TimeLimits")]
+    public TimeGroup TimeGroup { get; set; }
+
+  }
+
+  #endregion TimeLimit
+
+  #region TimeGroup class
+
+  public partial class TimeGroup {
+
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+
+    public string Comment { get; set; }
+
+    [InverseProperty("TimeGroup")]
+    public ICollection<TimeLimit> TimeLimits { get; set; }
+
+  }
+
+  #endregion TimeGroup
 
   #region User class
 
